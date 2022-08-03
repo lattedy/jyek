@@ -1,34 +1,27 @@
 const { Pool } = require('pg')
-const { RDS } = require('aws-sdk')
-const signerOptions = {
-  credentials: {
-    accessKeyId: 'AKIARKBK4QYVOVJ6HPYY',
-    secretAccessKey: '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',
-  },
-  region: 'ap-northeast-2',
-  hostname: 'jyek-db.cymjlrnstfba.ap-northeast-2.rds.amazonaws.com',
-  port: 5432,
-  username: 'postgres',
-}
-const signer = new RDS.Signer()
-const getPassword = () => signer.getAuthToken(signerOptions)
+const dbConfig = require('../config/db.config.js');
 
 const pool = new Pool({
-  host: signerOptions.hostname,
-  port: signerOptions.port,
-  user: signerOptions.username,
-  database: 'poastgress',
-  password: getPassword,
+	host: dbConfig.HOST,
+	user: dbConfig.USER,
 })
 
+// pool.query('SELECT $1::text as name', ['brianc'], (err, result) => {
+//   if (err) {
+// 		console.log(err);
+//     return console.error('Error executing query', err.stack)
+//   }
+//   console.log(result.rows[0].name) // brianc
+// })
+
 module.exports = {
-	query: (text, params, callback) => {
-		console.log(text);
-		const start = Date.now();
-		return pool.query(text, (err, res) => {
-      const duration = Date.now() - start;
-      console.log(res);
-      callback(err, res);
-    })
-	},
+	query : (text, params, callback) => {
+		return pool.query(text, params, (err, result)=> {
+			if (err) {
+				console.log(err);
+				return console.error('Error executing query', err.stack)
+			}
+			console.log(result.rows[0]) // brianc
+		})
+	}
 }

@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/dress', function(req, res, next) {
-  db.query('SELECT * FROM jyek.wed_product', '',(err, result) => {
+  db.query('SELECT NOW()', '',(err, result) => {
     if (err) {
       return next(err)
     }
