@@ -1,27 +1,19 @@
-const { Pool } = require('pg')
+const pq = require('pg');
 const dbConfig = require('../config/db.config.js');
 
-const pool = new Pool({
-	host: dbConfig.HOST,
-	user: dbConfig.USER,
-})
+//postgres://username:password@db.us-east-2.rds.amazonaws.com:5432/testdb
+const conString = "postgres://" + dbConfig.USER + ":" + dbConfig.PASSWORD + "@" + dbConfig.HOST + ":" + dbConfig.PORT + "/" + dbConfig.DB;
 
-// pool.query('SELECT $1::text as name', ['brianc'], (err, result) => {
-//   if (err) {
-// 		console.log(err);
-//     return console.error('Error executing query', err.stack)
-//   }
-//   console.log(result.rows[0].name) // brianc
-// })
+var client = new pg.Client(conString);
+client.connect();
 
-module.exports = {
-	query : (text, params, callback) => {
-		return pool.query(text, params, (err, result)=> {
-			if (err) {
-				console.log(err);
-				return console.error('Error executing query', err.stack)
-			}
-			console.log(result.rows[0]) // brianc
-		})
-	}
-}
+var query = client.query("SELECT NOW()");
+//fired after last row is emitted
+
+query.on('row', function(row) {
+    console.log(row);
+});
+
+query.on('end', function() {
+    client.end();
+});
