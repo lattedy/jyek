@@ -2,7 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var logger = require('./config/logger');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -15,7 +15,6 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -25,6 +24,18 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/ledger', ledgerRouter);
 app.use('/wed', weddingRouter);
+
+app.use(((req, res, next) => {
+  logger.info('로그 출력 test용 middleware');
+
+  logger.error('error 메시지');
+  logger.warn('warn 메시지');
+  logger.info('info 메시지');
+  logger.http('http 메시지');
+  logger.debug('debug 메시지');
+
+  next();
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

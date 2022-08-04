@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
+const logger = require('./logger');
 
 dotenv.config();
 
@@ -9,7 +10,7 @@ const pool = new Pool({
 });
 
 pool.on('connect', () => {
-  console.log('연결 성공!!');
+  logger.info('연결 성공!!');
 });
 
 module.exports = {
