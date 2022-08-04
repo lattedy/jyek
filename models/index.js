@@ -1,4 +1,4 @@
-const pq = require('pg');
+const pg = require('pg');
 const dbConfig = require('../config/db.config.js');
 
 //postgres://username:password@db.us-east-2.rds.amazonaws.com:5432/testdb
